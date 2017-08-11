@@ -15,12 +15,13 @@ function _init()
 end
 
 function _updategame()
-
-  kids[1].delay -= 1
-  if (kids[1].delay == 0) then
-    kids[1].delay = 3
-    kids[1].state = not kids[1].state
-    kids[1].y -= 1
+  for kid in all(kids) do
+    kid.delay -= 1
+    if (kid.delay == 0) then
+      kid.delay = 3
+      kid.state = not kid.state
+      kid.y -= 1
+    end
   end
 
   if (btnp(0)) then
@@ -99,15 +100,18 @@ function _drawgame()
   rectfill(0, 112, 127, 127, 13)
   rectfill(30, 19, 97, 111, 13)
 
-  if (kids[1].y <= 100) then
-    sspr(9*8+2, 0, 12, 8, kids[1].x, kids[1].y)
-    local xxx = 9*8 + 2
-    if (kids[1].state) then
-      xxx += 16
-    end
+  for kid in all(kids) do
+    if (kid.y <= 100) then
+      sspr(9*8+2, 0, 12, 8, kid.x, kid.y)
+      local xxx = 9*8 + 2
+      if (kid.state) then
+        xxx += 16
+      end
     
-    sspr(xxx, 8, 12, 8, kids[1].x, kids[1].y+8)
+      sspr(xxx, 8, 12, 8, kid.x, kid.y+8)
+    end
   end
+  
   rectfill(0, 0, 127, 18, 2)
 
   rectfill(8*4-1, 8*2,
@@ -131,16 +135,17 @@ function _drawgame()
   
   map(0,0,0,0,16,16)
   
-  if (kids[1].y > 100) then
-    sspr(9*8+2, 0, 12, 8, kids[1].x, kids[1].y)
-    local xxx = 9*8 + 2
-    if (kids[1].state) then
-      xxx += 16
-    end
+  for kid in all(kids) do
+    if (kid.y > 100) then
+      sspr(9*8+2, 0, 12, 8, kid.x, kid.y)
+      local xxx = 9*8 + 2
+      if (kids[1].state) then
+        xxx += 16
+      end
     
-    sspr(xxx, 8, 12, 8, kids[1].x, kids[1].y+8)
+      sspr(xxx, 8, 12, 8, kid.x, kid.y+8)
+    end
   end
-
 end
 __gfx__
 00000000000066666666000066666666000000000000000000000000100000000000000000000444444000000000099999900000000000000000000000000000
