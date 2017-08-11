@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 8
 __lua__
 initial_delay = 15
-kid_state = false
+kids = {}
 
 function _init()
   left = 0
@@ -10,19 +10,17 @@ function _init()
   delay = initial_delay
   timer = delay
   counter = 0
-  kidx = 50
-  kidy = 128
-  kid_delay = 3
+  kids={{x=50, y=128, delay=3, state=false}}
   music(1)
 end
 
-function _update()
+function _updategame()
 
-  kid_delay -= 1
-  if (kid_delay == 0) then
-    kid_delay = 3
-    kid_state = not kid_state
-    kidy -= 1
+  kids[1].delay -= 1
+  if (kids[1].delay == 0) then
+    kids[1].delay = 3
+    kids[1].state = not kids[1].state
+    kids[1].y -= 1
   end
 
   if (btnp(0)) then
@@ -55,21 +53,60 @@ function _update()
   end
 end
 
-function _draw()
+function _updatemenu()
+  if (btnp()) then
+    _update = _updategame
+    _draw = _drawgame
+  end
+end
+
+function _drawmenu()
+  cls()
+
+  rectfill(0, 0, 127, 18, 2)
+
+  rectfill(8*4-1, 8*2,
+       8*8-1-1-left, 8*14-1,
+       12)
+  rectfill(8*8+1+right, 8*2,
+       8*12, 8*14-1,
+       12)
+  line(8*8-1-left, 8*2,
+       8*8-1-left, 8*14-1,
+       1)
+  line(8*8+right, 8*2,
+       8*8+right, 8*14-1,
+       1)
+  line(8*4, 8*2+4,
+       8*8-1-1-left, 8*2+4,
+       1)
+  line(8*8+1+right, 8*2+4,
+       8*12-1, 8*2+4,
+       1)
+  
+  map(0,0,0,0,16,16)
+  
+  print("THE DOORS", 64, 60, 0)
+end  
+
+_update = _updatemenu
+_draw = _drawmenu
+
+function _drawgame()
   cls()
 
   rectfill(0, 0, 127, 111, 2)
   rectfill(0, 112, 127, 127, 13)
   rectfill(30, 19, 97, 111, 13)
 
-  if (kidy <= 100) then
-    sspr(9*8+2, 0, 12, 8, kidx, kidy)
+  if (kids[1].y <= 100) then
+    sspr(9*8+2, 0, 12, 8, kids[1].x, kids[1].y)
     local xxx = 9*8 + 2
-    if (kid_state) then
+    if (kids[1].state) then
       xxx += 16
     end
     
-    sspr(xxx, 8, 12, 8, kidx, kidy+8)
+    sspr(xxx, 8, 12, 8, kids[1].x, kids[1].y+8)
   end
   rectfill(0, 0, 127, 18, 2)
 
@@ -94,14 +131,14 @@ function _draw()
   
   map(0,0,0,0,16,16)
   
-  if (kidy > 100) then
-    sspr(9*8+2, 0, 12, 8, kidx, kidy)
+  if (kids[1].y > 100) then
+    sspr(9*8+2, 0, 12, 8, kids[1].x, kids[1].y)
     local xxx = 9*8 + 2
-    if (kid_state) then
+    if (kids[1].state) then
       xxx += 16
     end
     
-    sspr(xxx, 8, 12, 8, kidx, kidy+8)
+    sspr(xxx, 8, 12, 8, kids[1].x, kids[1].y+8)
   end
 
 end
